@@ -1,0 +1,4 @@
+#!/bin/bash
+
+BINPATH=$( dirname "$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd)")
+python3 "$BINPATH/txfeature/run.py" $@
