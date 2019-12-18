@@ -6,7 +6,7 @@ transcripts.
 import logging
 import time
 
-from . import tx_build, txfeat_functions, utils
+from txfeature.db_builder import tx_build, txfeat_functions, utils
 
 
 def assemble(gff_df, tx_dict, fasta, tmp_dir, job):
@@ -43,10 +43,10 @@ def assemble(gff_df, tx_dict, fasta, tmp_dir, job):
         progress += 1
 
     # Completion time
-    task_time = format(round((time.time() - initial_time) / 60, 1), '0.1g')
+    task_time = format(round((time.time() - initial_time) / 60, 2), '0.2f')
     if job == 0:
         utils.progress_bar(1, 1, status='Complete!')
-    logger.debug('Build job %i took %s seconds to assemble %i annotated transcripts' % (job, task_time, total_tx))
+    logger.debug('Build job %i took %s minutes to assemble %i annotated transcripts' % (job, task_time, total_tx))
 
     # Return tx_assembled
     return tx_assembled

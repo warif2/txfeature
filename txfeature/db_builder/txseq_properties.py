@@ -3,7 +3,7 @@ contains functions to determine properties associated to transcript sequences
 """
 
 import re
-from . import utils
+from txfeature.db_builder import utils
 
 
 def au_element(seq):
@@ -27,7 +27,10 @@ def au_element(seq):
     # calculate values
     num_au_elements = len(au_search)
     au_fraction = len("".join(au_search)) / float(len(seq))
-    longest_au_element = max(map(len, au_search))
+    if num_au_elements > 0:
+        longest_au_element = max(map(len, au_search))
+    else:
+        longest_au_element = 0
 
     return {'au_pentamer': au_pentamer_count,
             'au_num': num_au_elements,
@@ -92,7 +95,7 @@ def rnalfold_energy(sequence, command):
 
 def kozac_score(txread):
     if txread.tx_status['five_prime_UTR'] == 'defined' and txread.tx_status['start_codon'] == 'defined':
-        if txread.length('mrna_region', 'five_prime_UTR') > 6:
+        if txread.length('mrna_region', 'five_prime_UTR') > 6 and txread.length('mrna_region', 'CDS') > 6:
             if txread.strand == '+':
                 start_zero = txread.g2iloc.index(int(txread.start_codon_coord.split(':')[1].split('-')[1]))
             else:

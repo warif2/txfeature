@@ -5,9 +5,9 @@ Takes assembled transcripts and returns dictionary of transcript features.
 import logging
 import time
 
-from . import utils, tx_classes
-from . import txseq_properties as tp
-from . import build_config
+from txfeature.db_builder import utils, tx_classes
+from txfeature.db_builder import txseq_properties as tp
+from txfeature.db_builder import build_config
 
 
 def add_features(tx_assembled, tx_dict, job):
@@ -116,10 +116,10 @@ def add_features(tx_assembled, tx_dict, job):
         progress += 1
 
     # Completion time
-    task_time = format(round((time.time() - initial_time) / 60, 1), '0.1g')
+    task_time = format(round((time.time() - initial_time) / 60, 2), '0.2f')
     if job == 0:
         utils.progress_bar(1, 1, status='Complete!')
-    logger.debug('Feature aggregation job %i took %s seconds for %i annotated transcripts' % (job, task_time, total_tx))
+    logger.debug('Feature aggregation job %i took %s minutes for %i annotated transcripts' % (job, task_time, total_tx))
 
     # Return tx_assembled
     return tx_feature

@@ -12,7 +12,8 @@ import csv
 import concurrent.futures
 import pandas as pd
 
-from . import gff_parser, tx_assembly, tx_features, txfeat_functions, build_config
+from txfeature.db_builder import gff_parser, tx_assembly, tx_features, txfeat_functions, build_config
+from txfeature.db_builder import system_check
 from txfeature import version
 
 
@@ -69,12 +70,16 @@ def main():
     logger.info('Starting database construction with txfeature ver=%s' % version.__version__)
 
     # Load and read configuration file
+    logger.debug('Performing system check to ensure necessary executables are installed.')
+    system_check.ready()
     build_config.load_check()
 
     # Parse gff into searchable dataframe
     logger.info('Parsing gene annotation file...')
+    gff_num = sum(1 for _ in open(args.gff))
     gff_df = gff_parser.gff_table(csv.reader(open(args.gff, 'r'), delimiter='\t'))
     logger.info('Parsing complete!')
+    logger.info('Number of entries in gff: %i' % gff_num)
     logger.info('Number of annotated transcripts: %i' % len(gff_df['tx_attr'].keys()))
 
     # Setup parallel processing
@@ -110,11 +115,11 @@ def main():
 
     # Save results to csv using pandas
     logger.info('Saving txfeat_db to output directory...')
-    output = pd.DataFrame(txfeat_df)
-    output.to_csv(args.out + '/txfeat_db_' + args.out + '.csv', index=False)
+    output = pd.DataFrame(txfeat_df).fillna(pd.np.nan)
+    output.to_csv(args.out + '/txfeat_db_' + args.out + '.csv', index=False, na_rep='NULL')
 
     # Completion time
-    task_time = format(round((time.time() - initial_time) / 60, 1), '0.1g')
+    task_time = format(round((time.time() - initial_time) / 60, 2), '0.2f')
     logger.debug('It took %s minutes to construct txfeature database' % task_time)
 
 

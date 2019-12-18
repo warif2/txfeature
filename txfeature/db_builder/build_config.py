@@ -23,7 +23,7 @@ def config_parse(file):
 
 def config_check():
     global cfg
-    keys = ['viennarna_dir', 'rnafold_command', 'rnalfold_command']
+    keys = ['rnafold_command', 'rnalfold_command']
     for item in keys:
         if item not in list(cfg.keys()):
             return 'fail', item

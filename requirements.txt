@@ -1,0 +1,10 @@
+bio==0.1.0
+biopython==1.74
+numpy==1.17.3
+pandas==0.25.3
+pybedtools==0.8.0
+pysam==0.15.3
+python-dateutil==2.8.1
+pytz==2019.3
+six==1.12.0
+-e git+https://github.com/warif2/txfeature.git@780287b76e0f2329d2c50581efe205ab66a9117e#egg=txfeature
