@@ -23,30 +23,42 @@ def config_parse(file):
 
 def config_check():
     global cfg
-    keys = ['rnafold_command', 'rnalfold_command']
+    keys = ['rnafold_command', 'rnalfold_command', 'viennarna_dir']
     for item in keys:
         if item not in list(cfg.keys()):
             return 'fail', item
-        if item == 'viennarna_dir':
-            if cfg[item][0] == '~':
-                cfg[item] = cfg[item].replace('~', env_variables.base_path)
     return 'pass', 0
 
 
 # Load and read configuration file
-def load_check():
+def load_check(file):
     # setup logging
     logger = logging.getLogger(__name__ + '.load_check')
 
-    if os.path.isfile(env_variables.cfg_path + 'build_db.config'):
-        cfg_file = open(env_variables.cfg_path + 'build_db.config', 'r')
-        config_parse(cfg_file)
-        status, key = config_check()
-        if status == 'fail':
-            logger.info('Error: missing %s in build_db.config file!' % key)
-            sys.exit(1)
+    if file is None:
+        if os.path.isfile(env_variables.db_builder_path + 'build_db.cfg'):
+            cfg_file = open(env_variables.db_builder_path + 'build_db.cfg', 'r')
+            config_parse(cfg_file)
+            status, key = config_check()
+            if status == 'fail':
+                logger.info('Error: missing %s in build_db.cfg file!' % key)
+                sys.exit(1)
+            else:
+                logger.debug('Configurations from build_db.cfg loaded.')
         else:
-            logger.debug('Configurations from build_db.config loaded.')
+            logger.info('Error: build_db.cfg file not found!')
+            sys.exit(1)
     else:
-        logger.info('Error: build_db.config file not found!')
-        sys.exit(1)
+        logger.debug('Loading user-defined configuration file.')
+        if os.path.isfile(file):
+            cfg_file = open(file, 'r')
+            config_parse(cfg_file)
+            status, key = config_check()
+            if status == 'fail':
+                logger.info('Error: missing %s in build_db.cfg file!' % key)
+                sys.exit(1)
+            else:
+                logger.debug('Configurations from build_db.cfg loaded.')
+        else:
+            logger.info('Error: build_db.cfg file not found!')
+            sys.exit(1)

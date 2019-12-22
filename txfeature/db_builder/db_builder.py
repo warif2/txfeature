@@ -28,14 +28,15 @@ def main():
         prog="txfeature build_db")
     optional = parser._action_groups.pop()
     required = parser.add_argument_group('required arguments')
-    required.add_argument("-gff", type=str, default=None, metavar="GFF",
+    required.add_argument("-gff", type=str, default=None, metavar="<gff_file>",
                           help="specify path to the associated gff3 file", required=True)
-    required.add_argument("-fa", type=str, default=None, metavar="FASTA", help="specify path to the fasta file",
+    required.add_argument("-fa", type=str, default=None, metavar="<fasta_file>", help="specify path to the fasta file",
                           required=True)
-    required.add_argument("-out", type=str, default=None, metavar="OUTPUT", help="label for output directory",
+    required.add_argument("-out", type=str, default=None, metavar="<output_name>", help="label for output directory",
                           required=True)
     optional.add_argument("-t", "--threads", nargs='?', const=1, type=int, default=1,  metavar="",
                           help='number of threads to utilize (default = 1)')
+    optional.add_argument("-c", "--config", type=str, default=None, metavar="", help="specify path to config file")
     optional.add_argument("-v", "--version", action='version', version='%(prog)s v' + version.__version__)
     optional.add_argument("-s", action='store_true', help="silence terminal output")
     parser._action_groups.append(optional)
@@ -71,8 +72,8 @@ def main():
 
     # Load and read configuration file
     logger.debug('Performing system check to ensure necessary executables are installed.')
+    build_config.load_check(args.config)
     system_check.ready()
-    build_config.load_check()
 
     # Parse gff into searchable dataframe
     logger.info('Parsing gene annotation file...')
