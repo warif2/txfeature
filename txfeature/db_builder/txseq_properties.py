@@ -95,7 +95,7 @@ def rnalfold_energy(sequence, command):
 
 def kozac_score(txread):
     if txread.tx_status['five_prime_UTR'] == 'defined' and txread.tx_status['start_codon'] == 'defined':
-        if txread.length('mrna_region', 'five_prime_UTR') > 6 and txread.length('mrna_region', 'CDS') > 6:
+        if txread.length('mrna_region', 'five_prime_UTR') > 9 and txread.length('mrna_region', 'CDS') > 15:
             if txread.strand == '+':
                 start_zero = txread.g2iloc.index(int(txread.start_codon_coord.split(':')[1].split('-')[1]))
             else:

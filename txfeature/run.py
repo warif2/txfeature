@@ -12,13 +12,15 @@ help_text_txfeat = """txfeature v1.0
 A tool to obtain features associated to annotated transcripts within
 gff files.
 
-usage: txfeature <mode> [options] [-h]
+usage: txfeature <mode|command> [options] [-h]
 
 modes:
 build_db          pipeline to construct transcript feature database
-build_db_config   output configuration file to working directory to modify settings
 
-***Further [options] for mode can be obtained by <mode> --help."""
+commands:
+build_db_config   output configuration file to working directory to modify build settings
+
+Note: Further [options] for mode can be obtained by <mode> --help."""
 
 if __name__ == '__main__':
 
