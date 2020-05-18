@@ -2,3 +2,5 @@
 venv
 txfeature.egg-info
 !/lib/ViennaRNA/
+tests/test_data/GRCm38.primary_assembly.genome.fa
+tests/test_data/GRCm38.primary_assembly.genome.fa.fai

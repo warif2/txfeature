@@ -103,11 +103,21 @@ def main():
             tx_assembled.update(job.result())
     logger.debug('Transcript assembly complete!')
 
+    # Breaking into manageable chunks
+    logger.info('Dividing data into manageable chunks...')
+    tx_chunks = txfeat_functions.chunks(tx_assembled, 500)
+    fjobs = []
+    for item in tx_chunks:
+        fjobs.append(item)
+
     # Construct txfeat dataframe
     txfeat_df = []
     logger.info('Aggregating features for transcripts...')
     with concurrent.futures.ProcessPoolExecutor(max_workers=args.threads) as executor:
-        jobs = [executor.submit(tx_features.add_features, tx_assembled, tx_jobs[i], i) for i in njobs]
+        # jobs = [executor.submit(tx_features.add_features, tx_assembled, tx_jobs[i], i) for i in njobs]
+        nchunks = range(len(fjobs))
+        lchunks = len(fjobs)
+        jobs = [executor.submit(tx_features.add_features, fjobs[i], i, lchunks, args.threads) for i in nchunks]
 
         # collect results from jobs
         for job in concurrent.futures.as_completed(jobs):
@@ -117,7 +127,7 @@ def main():
     # Save results to csv using pandas
     logger.info('Saving txfeat_db to output directory...')
     output = pd.DataFrame(txfeat_df).fillna(pd.np.nan)
-    output.to_csv(args.out + '/txfeat_db_' + args.out + '.csv', index=False, na_rep='NULL')
+    output.to_csv(args.out + '/txfeat_db.csv', index=False, na_rep='NULL')
 
     # Completion time
     task_time = format(round((time.time() - initial_time) / 60, 2), '0.2f')

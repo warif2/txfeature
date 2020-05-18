@@ -29,6 +29,11 @@ if __name__ == '__main__':
         sys.argv = sys.argv[1:]
         db_build.main()
 
+    elif sys.argv[1] == 'build_check':
+        sys.argv =['build_db', '-gff', txfeature.env_variables.test_path + 'test_data/test_set_500.gff3', '-fa',
+                   txfeature.env_variables.test_path + '/test_data/GRCm38.primary_assembly.genome.fa', '-out', 'test/']
+        db_build.main()
+
     elif sys.argv[1] == 'build_db_config':
         cfg = txfeature.env_variables.db_builder_path + 'build_db.cfg'
         shutil.copyfile(cfg, './build_db.cfg')
